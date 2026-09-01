@@ -20,7 +20,12 @@ def search_company_knowledge(query: str, top_k: int = 5) -> list[dict]:
 def get_company_policy(topic: str) -> list[dict]:
     embedding = generate_embedding(topic)
     results = match_chunks(embedding, top_k=3)
-    return [r for r in results if "policy" in r.get("document_title", "").lower() or True]
+
+    return [
+        result
+        for result in results
+        if "policy" in result.get("document_title", "").lower()
+    ]
 
 
 def get_product_information(product_query: str) -> list[dict]:
