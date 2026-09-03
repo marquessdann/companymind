@@ -8,36 +8,38 @@ FastAPI + Pydantic v2 na API. Supabase (PostgreSQL) como banco, com pgvector par
 
 ## Arquitetura
 
+```
 POST /api/v1/chat
-→ embedding da pergunta
-→ match_document_chunks (pgvector, similaridade de cosseno)
-→ sanitização dos chunks recuperados (prompt injection)
-→ chat completion com o contexto recuperado
-→ log da consulta (query_logs)
-→ resposta + fontes + similaridade
-
+    → embedding da pergunta
+    → match_document_chunks (pgvector, similaridade de cosseno)
+    → sanitização dos chunks recuperados (prompt injection)
+    → chat completion com o contexto recuperado
+    → log da consulta (query_logs)
+    → resposta + fontes + similaridade
+```
 
 A busca vetorial roda como função SQL no próprio Postgres (`match_document_chunks`, em `sql/schema.sql`), não em memória na aplicação — o índice `ivfflat` sobre a coluna `vector(1536)` é quem faz o trabalho pesado.
 
+```
 app/
-api/v1/ endpoints REST
-core/ configuração via variáveis de ambiente
-schemas/ contratos Pydantic de entrada/saída
-services/ embeddings, chunking, logging de consultas
-repositories/ acesso a dados (Supabase)
-rag/ orquestração do pipeline
-llm/ cliente de chat completion
-mcp/ tools compartilhadas + MCP Server
-security/ auth admin, defesa contra prompt injection
-database/ cliente Supabase
+  api/v1/        endpoints REST
+  core/          configuração via variáveis de ambiente
+  schemas/       contratos Pydantic de entrada/saída
+  services/      embeddings, chunking, logging de consultas
+  repositories/  acesso a dados (Supabase)
+  rag/           orquestração do pipeline
+  llm/           cliente de chat completion
+  mcp/           tools compartilhadas + MCP Server
+  security/      auth admin, defesa contra prompt injection
+  database/      cliente Supabase
 config/
-ai_policy.py system prompt e regras do assistente, isolado do código de negócio
+  ai_policy.py   system prompt e regras do assistente, isolado do código de negócio
 sql/
-schema.sql tabelas, índice vetorial, função de match, RLS
+  schema.sql     tabelas, índice vetorial, função de match, RLS
 scripts/
-seed_data.py, ingest_file.py
+  seed_data.py, ingest_file.py
 tests/
-
+```
 
 ## RAG, tool calling e MCP
 
