@@ -5,7 +5,10 @@ from app.repositories.documents_repository import match_chunks
 from app.security.prompt_injection import sanitize_chunks
 from app.llm.client import ask_llm
 from app.services.query_logs import log_query
+from app.core.config import get_settings
 from config.ai_policy import RESPONSE_WHEN_NO_CONTEXT
+
+settings = get_settings()
 
 
 def run_rag_pipeline(question: str, department: str | None = None) -> dict:
@@ -41,6 +44,6 @@ def run_rag_pipeline(question: str, department: str | None = None) -> dict:
             for c in chunks
         ],
         "has_sufficient_context": has_context,
-        "model_used": "gpt-4o-mini",
+        "model": settings.chat_model,
         "response_time_ms": elapsed_ms,
     }
