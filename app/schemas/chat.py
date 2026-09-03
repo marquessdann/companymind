@@ -17,5 +17,5 @@ class ChatResponse(BaseModel):
     answer: str
     sources: list[RetrievedChunk]
     has_sufficient_context: bool
-    model_used: str
+    model: str
     response_time_ms: int
