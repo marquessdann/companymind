@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     chunk_overlap: int = 120
     retrieval_top_k: int = 5
     similarity_threshold: float = 0.72
+    
+
+    allowed_origins: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+    ]
 
 
 @lru_cache
